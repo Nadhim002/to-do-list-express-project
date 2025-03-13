@@ -12,8 +12,7 @@ export function createProject(req, res, next) {
   project.createProject((err, lastId) => {
 
     if (err) {
-      console.log(err.message)
-      res.json({ msg: "Something went Worng " })
+      next(err)
       return
     }
 
@@ -31,13 +30,18 @@ export function updateProject(req, res, next) {
 
   const project = new Project(req.body)
 
+  if (! project["name"] ){
+    res.status(400).json({ msg: `Project Name is mandatory for Updating Projects` })
+    return
+  }
+
   project.updateProject(
+
     idToUpdate,
 
     function (err, changes) {
       if (err) {
-        console.log(err.message)
-        res.json({ msg: "Something went Worng " })
+        next(err)
         return
       }
 
@@ -65,8 +69,7 @@ export function deleteProject(req, res, next) {
 
   Project.deleteProject(idToDelete, (err, changes) => {
     if (err) {
-      console.log(err.message)
-      res.json({ msg: "Something went Worng " })
+      next(err)
       return
     }
 
@@ -98,8 +101,7 @@ export function getProject(req, res, next) {
     (err, data) => {
 
       if (err) {
-        console.log(err.message)
-        res.json({ msg: "Something went Wrong " })
+        next(err)
         return
       }
 
@@ -121,8 +123,7 @@ export function getAllProject( req, res, next) {
       (err, data) => {
   
         if (err) {
-          console.log(err.message)
-          res.json({ msg: "Something went Wrong " })
+          next(err)
           return
         }
   
@@ -133,5 +134,5 @@ export function getAllProject( req, res, next) {
   }
 
 
-// 
+
 

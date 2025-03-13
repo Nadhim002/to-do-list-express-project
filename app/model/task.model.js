@@ -5,7 +5,7 @@ export class Task {
       this.content = task.content
       this.description = task.description || "No Description"
       this.dueDate = task.dueDate || null
-      this.isCompleted = task.isCompleted ?? 0
+      this.isCompleted = task.isCompleted || 0
       this.project_id = task.project_id 
     }
   

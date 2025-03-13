@@ -46,6 +46,7 @@ const sqlQueryToCreateTaskTable = `
 DB.exec( 'PRAGMA foreign_keys = ON' )
 
 DB.exec( sqlQueryToCreateProjectTable + sqlQueryToCreateTaskTable , 
+
         function(err) {
           if (err) {
             console.log(err.message)
@@ -55,6 +56,7 @@ DB.exec( sqlQueryToCreateProjectTable + sqlQueryToCreateTaskTable ,
           console.log("Table Created Sucessfully")
           
         }
+        
 )
 
 

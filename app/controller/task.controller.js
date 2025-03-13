@@ -25,11 +25,11 @@ export function createTask(req, res, next) {
         return
       }
 
-      res.status(500).json({ msg: "Something went wrong" })
+      next(err)
       return
     }
 
-    res.status(400).json({ msg: `Task has been added with id - ${lastId}` })
+    res.status(200).json({ msg: `Task has been added with id - ${lastId}` })
   })
 }
 
@@ -55,8 +55,7 @@ export function updateTask(req, res, next) {
 
   task.updateTask(idToUpdate, function (err, change) {
     if (err) {
-      console.log(err.message)
-      res.status(500).json({ msg: "Something went wrong" })
+      next(err)
       return
     }
 
@@ -83,13 +82,11 @@ export function deleteTask(req, res, next) {
 
   Task.deleteTask(idToDelete, function (err, change) {
     if (err) {
-      console.log(err.message)
-      res.status(500).json({ msg: "Something went wrong" })
+      next(err)
       return
     }
 
     if (change) {
-      console.log(err.message)
       res.status(200).json({ msg: `The Task with ${idToDelete} is deleted` })
       return
     }
@@ -108,8 +105,7 @@ export function getTask(req, res, next) {
 
   Task.getTask(idToGet, function (err, row) {
     if (err) {
-      console.log(err.message)
-      res.status(500).json({ msg: "Something went wrong" })
+      next(err)
       return
     }
 
