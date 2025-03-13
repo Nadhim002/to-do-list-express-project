@@ -1,4 +1,3 @@
-import DB from "../config/db.js"
 import dBCallWithPromise from "../config/promiseBasedDbCalls.js"
 
 export class Project {

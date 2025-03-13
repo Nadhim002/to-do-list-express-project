@@ -1,6 +1,7 @@
 import { Task } from "../model/task.model.js"
 
 export function createTask(req, res, next) {
+
   const task = new Task(req.body)
 
   if (!task["content"]) {
@@ -13,8 +14,13 @@ export function createTask(req, res, next) {
     return
   }
 
-  task.createTask(function (err, lastId) {
-    if (err) {
+  task
+    .createTask()
+    .then( ( [lastID, _] ) => {
+      res.status(200).json({ msg: `Task has been added with id - ${lastID}` })
+    })
+    .catch((err) => {
+
       if (
         err.code.includes("SQLITE_CONSTRAINT") &&
         err.message.includes("FOREIGN KEY")
@@ -26,15 +32,12 @@ export function createTask(req, res, next) {
       }
 
       next(err)
-      return
-    }
 
-    res.status(200).json({ msg: `Task has been added with id - ${lastId}` })
-  })
+    })
+
 }
 
 export function updateTask(req, res, next) {
-  
   const idToUpdate = req.params?.id
 
   if (isNaN(idToUpdate)) {
@@ -54,23 +57,23 @@ export function updateTask(req, res, next) {
     return
   }
 
-  task.updateTask(idToUpdate, function (err, change) {
-    if (err) {
-      next(err)
-      return
-    }
+  task.updateTask( idToUpdate )
+      .then( ([ _ , change ]) => {
 
-    if (change) {
-      res
-        .status(200)
-        .json({ msg: `Task  with id - ${idToUpdate} has been Updated` })
-      return
-    }
+        if (change) {
+          res
+            .status(200)
+            .json({ msg: `Task  with id - ${idToUpdate} has been Updated` })
+          return
+        }
+    
+        res
+          .status(400)
+          .json({ msg: `Task  with id - ${idToUpdate} has is not available` })
+      }
+       )
+      .catch( err => next(err) )
 
-    res
-      .status(400)
-      .json({ msg: `Task  with id - ${idToUpdate} has is not available` })
-  })
 }
 
 export function deleteTask(req, res, next) {
@@ -81,19 +84,21 @@ export function deleteTask(req, res, next) {
     return
   }
 
-  Task.deleteTask(idToDelete, function (err, change) {
-    if (err) {
-      next(err)
-      return
-    }
+  Task.deleteTask(idToDelete)
+        .then( ( [_ , change ]) => {
 
-    if (change) {
-      res.status(200).json({ msg: `The Task with ${idToDelete} is deleted` })
-      return
-    }
+          if (change) {
+            res.status(200).json({ msg: `The Task with ${idToDelete} is deleted` })
+            return
+          }
+      
+          res.status(400).json({ msg: `The Task with ${idToDelete} is not Found` })
 
-    res.status(400).json({ msg: `The Task with ${idToDelete} is not Found` })
-  })
+        }
+        )
+        .catch( err => next(err) )
+
+
 }
 
 export function getTask(req, res, next) {
@@ -104,11 +109,9 @@ export function getTask(req, res, next) {
     return
   }
 
-  Task.getTask(idToGet, function (err, row) {
-    if (err) {
-      next(err)
-      return
-    }
+  Task.getTask(idToGet)
+  .then( ( row ) => {
+
 
     if (row) {
       res.status(200).json(row)
@@ -116,5 +119,10 @@ export function getTask(req, res, next) {
     }
 
     res.status(400).json({ msg: `The Task with ${idToGet} is not Found` })
-  })
+
+  }
+  )
+  .catch( err => next(err) )
+
+
 }
