@@ -1,6 +1,7 @@
 import DB from "../config/db.js"
 
 export class Task {
+
     constructor(task) {
       this.content = task.content
       this.description = task.description || "No Description"
@@ -33,7 +34,7 @@ export class Task {
     updateTask( id, result) {
   
   
-      const sqlQuery = "update tasks set task_content = ? , task_description = ? ,  due_date = ? , is_completed  = ? , project_id  = ?   where id = ? "
+      const sqlQuery = "update tasks set task_content = ? , task_description = ? ,  due_date = ? , is_completed  = ? , project_id  = ?   where task_id = ? "
   
       const values = [ this.content , this.description , this.dueDate , this.isCompleted , this.project_id , id   ]
   
@@ -58,7 +59,7 @@ export class Task {
   
     static getTask( id, result ){
   
-      const sqlQuery = " select * tasks  where id = ? "
+      const sqlQuery = " select * from tasks  where task_id = ? "
   
       const values = [ id ]
   
@@ -80,7 +81,7 @@ export class Task {
     static deleteTask(id, result){
   
   
-      const sqlQuery = " delete from  tasks  where id = ?"
+      const sqlQuery = " delete from  tasks  where task_id = ?"
   
       const values = [ id ]
   

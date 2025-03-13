@@ -1,0 +1,10 @@
+GET http://localhost:8000/task/1
+SQLITE_ERROR: near "tasks": syntax error time : 1741863246919
+GET http://localhost:8000/task/1
+SQLITE_ERROR: no such column: id time : 1741863324917
+GET http://localhost:8000/task/1
+SQLITE_ERROR: no such column: id time : 1741863744091
+PUT http://localhost:8000/task/3
+SQLITE_ERROR: no such column: id time : 1741864464741
+DELETE http://localhost:8000/task/3
+SQLITE_ERROR: no such column: id time : 1741864521958

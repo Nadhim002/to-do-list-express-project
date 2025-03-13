@@ -1,23 +1,23 @@
 import { Project } from "../model/project.model.js"
 
 export function createProject(req, res, next) {
-
   const project = new Project(req.body)
 
-  if (! project["name"] ){
-    res.status(400).json({ msg: `Project Name is mandatory for Creating Projects` })
+  if (!project["name"]) {
+    res
+      .status(400)
+      .json({ msg: `Project Name is mandatory for Creating Projects` })
     return
   }
 
-  project.createProject((err, lastId) => {
-
-    if (err) {
-      next(err)
-      return
-    }
-
-    res.status(200).json({ msg: `Project has been added with id - ${lastId}` })
-  })
+  project
+    .createProject()
+    .then(([lastID, _]) => {
+      res
+        .status(200)
+        .json({ msg: `Project has been added with id - ${lastID}` })
+    })
+    .catch((err) => next(err))
 }
 
 export function updateProject(req, res, next) {
@@ -30,33 +30,28 @@ export function updateProject(req, res, next) {
 
   const project = new Project(req.body)
 
-  if (! project["name"] ){
-    res.status(400).json({ msg: `Project Name is mandatory for Updating Projects` })
+  if (!project["name"]) {
+    res
+      .status(400)
+      .json({ msg: `Project Name is mandatory for Updating Projects` })
     return
   }
 
-  project.updateProject(
-
-    idToUpdate,
-
-    function (err, changes) {
-      if (err) {
-        next(err)
-        return
-      }
-
+  project
+    .updateProject(idToUpdate)
+    .then(([_, changes]) => {
       if (changes) {
         res
           .status(200)
-          .json({
-            msg: `Project with Id ${idToUpdate} has been updated sucessfully`,
-          })
+          .json({ msg: `Project  with id - ${lastID} has been updated ` })
         return
       }
 
-      res.status(400).json({ msg: `Project Id ${idToUpdate} not found` })
-    }
-  )
+      res
+        .status(400)
+        .json({ msg: `Project  with id - ${lastID} has not found` })
+    })
+    .catch((err) => next(err))
 }
 
 export function deleteProject(req, res, next) {
@@ -67,27 +62,23 @@ export function deleteProject(req, res, next) {
     return
   }
 
-  Project.deleteProject(idToDelete, (err, changes) => {
-    if (err) {
-      next(err)
-      return
-    }
+  Project.deleteProject(idToDelete)
+    .then(([_, changes]) => {
+      if (changes) {
+        res
+          .status(200)
+          .json({
+            msg: `Project with Id ${idToDelete} has been deletes sucessfully`,
+          })
+        return
+      }
 
-    if (changes) {
-      res
-        .status(200)
-        .json({
-          msg: `Project with Id ${idToDelete} has been deletes sucessfully`,
-        })
-      return
-    }
-
-    res.status(400).json({ msg: `Project Id ${idToDelete} not found` })
-  })
+      res.status(400).json({ msg: `Project Id ${idToDelete} not found` })
+    })
+    .catch((err) => next(err))
 }
 
 export function getProject(req, res, next) {
-
   const idToGet = parseInt(req.params?.id)
 
   if (isNaN(idToGet)) {
@@ -95,44 +86,26 @@ export function getProject(req, res, next) {
     return
   }
 
-  Project.getProject(
-    idToGet,
-
-    (err, data) => {
-
-      if (err) {
-        next(err)
-        return
-      }
-
-      if( data ){
+  Project.getProject(idToGet)
+    .then((data) => {
+      if (data) {
         res.status(200).json(data)
         return
       }
 
       res.status(400).json({ msg: `Project Id ${idToGet} not found` })
-
-    }
-  )
+    })
+    .catch((err) => {
+      next(err)
+    })
 }
 
-export function getAllProject( req, res, next) {
-  
-    Project.getAllProject(
-
-      (err, data) => {
-  
-        if (err) {
-          next(err)
-          return
-        }
-  
-        res.status(200).json(data)
-    
-      }
-    )
-  }
-
-
-
-
+export function getAllProject(req, res, next) {
+  Project.getAllProject()
+    .then((data) => {
+      res.status(200).json(data)
+    })
+    .catch((err) => {
+      next(err)
+    })
+}

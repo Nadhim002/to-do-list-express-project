@@ -34,6 +34,7 @@ export function createTask(req, res, next) {
 }
 
 export function updateTask(req, res, next) {
+  
   const idToUpdate = req.params?.id
 
   if (isNaN(idToUpdate)) {
