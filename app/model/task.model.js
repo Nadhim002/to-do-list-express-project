@@ -71,7 +71,7 @@ export class Task {
     }
 
     if ( filters.isCompleted ){
-      sqlAdder.push( " isCompleted = ? " )
+      sqlAdder.push( " is_completed = ? " )
       values.push( filters.isCompleted )
     }
 

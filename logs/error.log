@@ -8,3 +8,23 @@ PUT http://localhost:8000/task/3
 SQLITE_ERROR: no such column: id time : 1741864464741
 DELETE http://localhost:8000/task/3
 SQLITE_ERROR: no such column: id time : 1741864521958
+POST http://localhost:8000/user/
+Class constructor dBCallWithPromise cannot be invoked without 'new' time : 1742035614360
+POST http://localhost:8000/project/
+SQLITE_CONSTRAINT: NOT NULL constraint failed: projects.user_id time : 1742035773212
+POST http://localhost:8000/project/
+SQLITE_CONSTRAINT: NOT NULL constraint failed: projects.user_id time : 1742035845452
+POST http://localhost:8000/project/
+SQLITE_CONSTRAINT: NOT NULL constraint failed: projects.user_id time : 1742035875654
+POST http://localhost:8000/project/
+SQLITE_CONSTRAINT: NOT NULL constraint failed: projects.user_id time : 1742035921108
+POST http://localhost:8000/comment/
+SQLITE_CONSTRAINT: FOREIGN KEY constraint failed time : 1742036489699
+GET http://localhost:8000/task/
+SQLITE_ERROR: no such column: isCompleted time : 1742036818175
+GET http://localhost:8000/task/
+SQLITE_ERROR: no such column: isCompleted time : 1742037061918
+GET http://localhost:8000/task/
+SQLITE_ERROR: no such column: isCompleted time : 1742037077076
+DELETE http://localhost:8000/user/1
+idToDelete is not defined time : 1742037531562

@@ -120,7 +120,7 @@ function filterTaskHelper( filters ){
   this.due_start_date = filters.due_start_date 
   this.due_end_date = filters.due_end_date 
 
-  this.isCompleted = filters.isCompleted 
+  this.isCompleted =  Number( filters.isCompleted )
   
   this.created_start_date = filters.created_start_date
   this.created_end_date = filters.created_end_date

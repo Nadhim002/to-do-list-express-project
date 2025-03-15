@@ -9,6 +9,8 @@ export function createComment( req , res , next  ){
         return
     }
 
+    console.log( comment  )
+
     if( isNaN( comment.project_id  ) || isNaN( comment.task_id  )  ){
         res.status(400).json( { err : `Enter Proper Project ID or Task ID` } )
         return

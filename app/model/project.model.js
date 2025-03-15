@@ -5,13 +5,13 @@ export class Project {
     this.name = project.name
     this.color = project.color ?? "White"
     this.is_favorite = project.is_favorite ?? 0
-    this.user_id = project.user_id 
+    this.user_id = Number(project.user_id )
   }
 
   createProject() {
     const sqlQuery =
     "insert into projects ( project_name , color , is_favorite , user_id ) values( ? , ? , ? , ? )"
-    const values = [this.name, this.color, this.is_favorite]
+    const values = [this.name, this.color, this.is_favorite , this.user_id ]
     return dBCallWithPromise.run(sqlQuery, values)
   }
 
