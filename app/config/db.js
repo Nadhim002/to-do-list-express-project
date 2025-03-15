@@ -26,7 +26,9 @@ const sqlQueryToCreateProjectTable = `
                                             project_id integer primary key  AUTOINCREMENT , 
                                             project_name text not null , 
                                             color text not null , 
-                                            is_favorite integer default 0 
+                                            is_favorite integer default 0 ,
+                                            user_id integer not null , 
+                                            FOREIGN KEY ( user_id ) REFERENCES users( user_id ) ON DELETE CASCADE
                                     ) ; 
                                     `
 
@@ -43,9 +45,28 @@ const sqlQueryToCreateTaskTable = `
                                     ) ; 
                                     `
 
-DB.exec( 'PRAGMA foreign_keys = ON' )
+const sqlQueryToCreateUserTable = `
+                                    create table if not exists users(
+                                            user_id integer primary key AUTOINCREMENT , 
+                                            user_name text not null ,
+                                            user_mail text not null unique 
+                                    ) ;
+                                  `
 
-DB.exec( sqlQueryToCreateProjectTable + sqlQueryToCreateTaskTable , 
+const sqlQueryToCreateCommentTable =  `
+                                      create table if not exists comments (
+                                          comment_id integer primary key   AUTOINCREMENT , 
+                                          comment_content text not null , 
+                                          project_id integer not null , 
+                                          task_id integer , 
+                                          FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE , 
+                                          FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE 
+                                      ) ; 
+                                      `
+
+const sqlQueryForeignKeyEnabling =  ' PRAGMA foreign_keys = ON ; '
+
+DB.exec(  sqlQueryForeignKeyEnabling + sqlQueryToCreateProjectTable + sqlQueryToCreateTaskTable + sqlQueryToCreateUserTable + sqlQueryToCreateCommentTable  , 
 
         function(err) {
           if (err) {

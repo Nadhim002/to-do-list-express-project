@@ -38,6 +38,7 @@ export function createTask(req, res, next) {
 }
 
 export function updateTask(req, res, next) {
+  
   const idToUpdate = req.params?.id
 
   if (isNaN(idToUpdate)) {
@@ -77,6 +78,7 @@ export function updateTask(req, res, next) {
 }
 
 export function deleteTask(req, res, next) {
+
   const idToDelete = req.params?.id
 
   if (isNaN(idToDelete)) {
@@ -101,28 +103,26 @@ export function deleteTask(req, res, next) {
 
 }
 
-export function getTask(req, res, next) {
-  const idToGet = req.params?.id
+export function getTask( req, res, next) {
 
-  if (isNaN(idToGet)) {
-    res.status(400).json({ msg: `Task ID must be a Number` })
-    return
-  }
+  const filters = new filterTaskHelper( req.body )
 
-  Task.getTask(idToGet)
-  .then( ( row ) => {
-
-
-    if (row) {
-      res.status(200).json(row)
-      return
-    }
-
-    res.status(400).json({ msg: `The Task with ${idToGet} is not Found` })
-
-  }
-  )
+  Task.getTask( filters )
+  .then( ( rows ) => { res.status(200).json(rows )})
   .catch( err => next(err) )
 
+}
+
+
+
+function filterTaskHelper( filters ){
+
+  this.due_start_date = filters.due_start_date 
+  this.due_end_date = filters.due_end_date 
+
+  this.isCompleted = filters.isCompleted 
+  
+  this.created_start_date = filters.created_start_date
+  this.created_end_date = filters.created_end_date
 
 }

@@ -10,6 +10,14 @@ export function createProject(req, res, next) {
     return
   }
 
+  if( !project["user_id"] ){
+    res
+    .status(400)
+    .json({ msg: `User id is mandatory for Creating Projects` })
+   return
+
+  }
+
   project
     .createProject()
     .then(([lastID, _]) => {
@@ -17,10 +25,11 @@ export function createProject(req, res, next) {
         .status(200)
         .json({ msg: `Project has been added with id - ${lastID}` })
     })
-    .catch((err) => next(err))
+    .catch( err => next(err))
 }
 
 export function updateProject(req, res, next) {
+  
   const idToUpdate = parseInt(req.params?.id)
 
   if (isNaN(idToUpdate)) {
@@ -43,13 +52,13 @@ export function updateProject(req, res, next) {
       if (changes) {
         res
           .status(200)
-          .json({ msg: `Project  with id - ${lastID} has been updated ` })
+          .json({ msg: `Project  with id - ${idToUpdate} has been updated ` })
         return
       }
 
       res
         .status(400)
-        .json({ msg: `Project  with id - ${lastID} has not found` })
+        .json({ msg: `Project  with id - ${idToUpdate} has not found` })
     })
     .catch((err) => next(err))
 }
@@ -101,6 +110,7 @@ export function getProject(req, res, next) {
 }
 
 export function getAllProject(req, res, next) {
+
   Project.getAllProject()
     .then((data) => {
       res.status(200).json(data)
@@ -108,4 +118,5 @@ export function getAllProject(req, res, next) {
     .catch((err) => {
       next(err)
     })
+    
 }
