@@ -5,18 +5,19 @@ export class Project {
     this.name = project.name
     this.color = project.color ?? "White"
     this.is_favorite = project.is_favorite ?? 0
+    this.user_id = project.user_id 
   }
 
   createProject() {
     const sqlQuery =
-      "insert into projects ( project_name , color , is_favorite  ) values( ? , ? , ? )"
+    "insert into projects ( project_name , color , is_favorite , user_id ) values( ? , ? , ? , ? )"
     const values = [this.name, this.color, this.is_favorite]
     return dBCallWithPromise.run(sqlQuery, values)
   }
 
   updateProject(id) {
     const sqlQuery =
-      "update projects set project_name = ? ,  color = ? ,  is_favorite = ?   where project_id = ? "
+      "update projects set project_name = ?  ,  color = ?  ,  is_favorite = ?   where project_id = ?  "
     const values = [this.name, this.color, this.is_favorite, id]
     return dBCallWithPromise.run(sqlQuery, values)
   }
