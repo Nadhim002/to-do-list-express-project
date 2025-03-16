@@ -1,5 +1,8 @@
 import {User} from "../model/user.model.js"
 
+// @desc   Create new user
+// @route  POST /user/
+
 export function addUser( req , res , next ){
 
     const user = new User( req.body )
@@ -9,6 +12,9 @@ export function addUser( req , res , next ){
         .catch( err => next(err) )
 
 }
+
+// @desc   Delete user using ID
+// @route  POST /user/:id
 
 export function deleteuser( req , res , next ){
 
@@ -34,22 +40,5 @@ export function deleteuser( req , res , next ){
     )
     .catch( err => next(err) )
 
-
-
-
 }
 
-
-export function deleteTask(req, res, next) {
-
-  const idToDelete = req.params?.id
-
-  if (isNaN(idToDelete)) {
-    res.status(400).json({ msg: `Task ID must be a Number` })
-    return
-  }
-
-
-
-
-}

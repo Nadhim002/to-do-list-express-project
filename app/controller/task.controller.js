@@ -1,5 +1,8 @@
 import { Task } from "../model/task.model.js"
 
+// @desc   Create a new task
+// @route  POST /task
+
 export function createTask(req, res, next) {
 
   const task = new Task(req.body)
@@ -36,6 +39,9 @@ export function createTask(req, res, next) {
     })
 
 }
+
+// @desc   Update a task by ID
+// @route  PUT /task/:id
 
 export function updateTask(req, res, next) {
   
@@ -77,6 +83,9 @@ export function updateTask(req, res, next) {
 
 }
 
+// @desc   Delete a task by ID
+// @route  DELETE /task/:id
+
 export function deleteTask(req, res, next) {
 
   const idToDelete = req.params?.id
@@ -102,6 +111,9 @@ export function deleteTask(req, res, next) {
 
 
 }
+
+// @desc   Get all tasks using filters
+// @route  GET /task
 
 export function getTask( req, res, next) {
 

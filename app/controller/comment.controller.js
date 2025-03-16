@@ -1,5 +1,8 @@
  import { Comment } from "../model/comment.model.js"
 
+// @desc  Create new comment
+// @route  POST /comment
+
 export function createComment( req , res , next  ){
 
     const comment =  new Comment( req.body )
@@ -22,6 +25,9 @@ export function createComment( req , res , next  ){
 
   }
 
+// @desc  Get Commnets by ProjectId
+// @route  GET /comment/:projectId
+
 export function getComment( req , res , next  ){
 
 
@@ -37,6 +43,9 @@ export function getComment( req , res , next  ){
         .catch( err => next(err) )
 
   }
+
+// @desc  Updates comment content
+// @route  PATCH /comment/:id
 
 export function updateComment( req , res , next  ){ 
 
@@ -69,6 +78,9 @@ export function updateComment( req , res , next  ){
     
 
  }
+
+// @desc  Delete the comment
+// @route  DELETE /comment/:id
 
 export function deleteComment( req , res , next  ){ 
 

@@ -1,5 +1,8 @@
 import { Project } from "../model/project.model.js"
 
+// @desc  Create new project
+// @route  POST /project
+
 export function createProject(req, res, next) {
   const project = new Project(req.body)
 
@@ -27,6 +30,9 @@ export function createProject(req, res, next) {
     })
     .catch( err => next(err))
 }
+
+// @desc   Update a project  by ID
+// @route  PUT /project/:id
 
 export function updateProject(req, res, next) {
   
@@ -63,6 +69,9 @@ export function updateProject(req, res, next) {
     .catch((err) => next(err))
 }
 
+// @desc   Delete a project by ID
+// @route  DELETE /project/:id
+
 export function deleteProject(req, res, next) {
   const idToDelete = parseInt(req.params?.id)
 
@@ -87,6 +96,9 @@ export function deleteProject(req, res, next) {
     .catch((err) => next(err))
 }
 
+// @desc   Get a single project by ID
+// @route  GET /project/:id
+
 export function getProject(req, res, next) {
   const idToGet = parseInt(req.params?.id)
 
@@ -108,6 +120,9 @@ export function getProject(req, res, next) {
       next(err)
     })
 }
+
+// @desc   Get all projects
+// @route  GET /project
 
 export function getAllProject(req, res, next) {
 

@@ -3,7 +3,6 @@ import { createProject , getProject , getAllProject ,updateProject , deleteProje
 
 const projectRouter = express.Router()
 
-
 // Create
 projectRouter.post( "/" , createProject )
 
