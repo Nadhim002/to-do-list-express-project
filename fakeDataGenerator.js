@@ -20,7 +20,7 @@ async function fakeUserGenerator(noOfusers) {
     .join(", ")}`
   const flatValues = values.flat()
 
-  return dBCallWithPromise.run(sqlQuery, flatValues)
+  return await dBCallWithPromise.run(sqlQuery, flatValues)
 }
 
 async function fakeProjectCreater(nooFProjects, batchSize) {
@@ -51,7 +51,7 @@ async function fakeProjectCreater(nooFProjects, batchSize) {
     promiseResolver.push(dBCallWithPromise.run(sqlQuery, flatValues))
   }
 
-  return await Promise.all(promiseResolver)
+  return  Promise.all(promiseResolver)
 }
 
 async function createFakeTasks(totalProjects, totalTasks, batchSize) {
@@ -85,7 +85,7 @@ async function extractProjectIds(limit, offset) {
 
 async function createTasksForProjects(projectIds, tasksPerProject) {
 
-  return Promise.all(
+  return  Promise.all(
     projectIds.map(projectId => createTasksForSingleProject(projectId, tasksPerProject))
   )
 
