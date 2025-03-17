@@ -1,7 +1,12 @@
 import dBCallWithPromise from "./app/config/promiseBasedDbCalls.js"
 
-const BATCH_SIZE = 10000
+const NO_OF_USERS = 1000 
+
 const NO_OF_PROJECTS = 1000000
+const BATCH_SIZE_FOR_PROEJCT = 10000
+
+const NO_OF_TASKS = 10000000  
+const BATCH_SIZE_FOR_TASK = 100000
 
 async function fakeUserGenerator(noOfusers) {
   const values = []
@@ -43,11 +48,114 @@ async function fakeProjectCreater(nooFProjects, batchSize) {
       .map(() => "(?, ? , ? )")
       .join(", ")}`
 
-    promiseResolver.push( dBCallWithPromise.run(sqlQuery, flatValues) )
+    promiseResolver.push(dBCallWithPromise.run(sqlQuery, flatValues))
   }
 
   return await Promise.all(promiseResolver)
 }
 
-const a = await fakeProjectCreater(NO_OF_PROJECTS , BATCH_SIZE )
+async function createFakeTasks(totalProjects, totalTasks, batchSize) {
 
+  const tasksPerProject = Math.ceil(totalTasks / totalProjects)
+  const projectsPerBatch = Math.floor(batchSize / tasksPerProject)
+  const totalBatches = Math.ceil(totalProjects / projectsPerBatch)
+
+  console.log( "Total No Of batches "  , totalBatches )
+
+  for (let batchNum = 0; batchNum < totalBatches; batchNum++) {
+
+    console.log( "Working on Batch :  "  , batchNum + 1 ) 
+
+    const offset = batchNum * projectsPerBatch
+    const limit = projectsPerBatch
+    
+    const projectIds = await extractProjectIds(limit, offset)
+    await createTasksForProjects(projectIds, tasksPerProject)
+    
+  }
+  
+  return Promise.resolve()
+}
+
+async function extractProjectIds(limit, offset) {
+  return await dBCallWithPromise
+    .all("SELECT project_id FROM projects LIMIT ? OFFSET ?", [limit, offset])
+    .then((data) => data.map(row => row.project_id))
+}
+
+async function createTasksForProjects(projectIds, tasksPerProject) {
+
+  return Promise.all(
+    projectIds.map(projectId => createTasksForSingleProject(projectId, tasksPerProject))
+  )
+
+}
+
+async function createTasksForSingleProject(projectId, tasksCount) {
+  const values = []
+  
+  for (let taskNum = 1; taskNum <= tasksCount; taskNum++) {
+    values.push([
+      `content_${projectId}_${taskNum}`,
+      `description_${projectId}_${taskNum}`,
+      new Date().toISOString().split('T')[0],
+      Math.random() < 0.5 ? 0 : 1,
+      projectId
+    ])
+  }
+    
+  const sqlQuery = `INSERT INTO tasks (task_content, task_description, due_date, is_completed, project_id) VALUES ${values.map(() => "(?, ?, ?, ?, ?)").join(", ")}`
+  const flatValues = values.flat()
+  
+  return dBCallWithPromise.run(sqlQuery, flatValues)
+}
+
+
+// export function fakeDataGenerator( req , res , next  ){
+
+// return  fakeUserGenerator( NO_OF_USERS )
+//         .then(
+//           () => {
+//             console.log(`${NO_OF_USERS} users has been created`)
+//             return fakeProjectCreater(NO_OF_PROJECTS, BATCH_SIZE_FOR_PROEJCT) 
+//           }
+//         )
+//         .then(
+//           () => {
+//             console.log(`${NO_OF_PROJECTS} projects has been created`)
+//             return fakeProjectCreater( NO_OF_TASKS,  BATCH_SIZE_FOR_TASK ) 
+//           }
+//         )
+//         .then(
+//           () => {
+//             console.log(`${NO_OF_TASKS} projects has been created`)
+//             res.status(200).json({msg : "Sucessfully Created all data" })  
+//           }
+//         )
+//         .catch( err => next(err) )
+
+// }
+export function fakeDataGenerator(req, res, next) {
+  dBCallWithPromise
+    .run("BEGIN TRANSACTION") 
+    .then(() => fakeUserGenerator(NO_OF_USERS))
+    .then(() => {
+      console.log(`${NO_OF_USERS} users have been created`)
+      return fakeProjectCreater(NO_OF_PROJECTS, BATCH_SIZE_FOR_PROEJCT)
+    })
+    .then(() => {
+      console.log(`${NO_OF_PROJECTS} projects have been created`)
+      return createFakeTasks( NO_OF_PROJECTS ,NO_OF_TASKS, BATCH_SIZE_FOR_TASK)
+    })
+    .then(() => {
+      console.log(`${NO_OF_TASKS} tasks have been created`)
+      return dBCallWithPromise.run("COMMIT")
+    })
+    .then(() => {
+      res.status(200).json({ msg: "Successfully created all data" })
+    })
+    .catch((err) => {
+      dBCallWithPromise.run("ROLLBACK").catch(console.error)
+      next(err)
+    })
+}

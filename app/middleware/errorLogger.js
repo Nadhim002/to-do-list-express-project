@@ -21,7 +21,7 @@ function errLogger(err, req, res, next) {
     }
   })
 
-  res.status(500).json({ err: "Something went Wrong" , "errMessage" : err.message , "errObj" : err  })
+  res.status(500).json({ err: "Something went Wrong" , "errMessage" : err.message , "errObj" : err , err : err.stack  })
 
   next()
 

@@ -28,3 +28,13 @@ GET http://localhost:8000/task/
 SQLITE_ERROR: no such column: isCompleted time : 1742037077076
 DELETE http://localhost:8000/user/1
 idToDelete is not defined time : 1742037531562
+POST http://localhost:8000/fake-data
+SQLITE_CONSTRAINT: UNIQUE constraint failed: users.user_mail time : 1742186371634
+POST http://localhost:8000/fake-data
+SQLITE_ERROR: too many SQL variables time : 1742186573036
+POST http://localhost:8000/fake-data
+SQLITE_ERROR: too many SQL variables time : 1742186951035
+POST http://localhost:8000/fake-data
+fakeTaskCreater is not defined time : 1742188234754
+POST http://localhost:8000/fake-data
+fakeTaskCreater is not defined time : 1742188306060
