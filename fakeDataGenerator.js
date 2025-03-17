@@ -110,31 +110,6 @@ async function createTasksForSingleProject(projectId, tasksCount) {
   return dBCallWithPromise.run(sqlQuery, flatValues)
 }
 
-
-// export function fakeDataGenerator( req , res , next  ){
-
-// return  fakeUserGenerator( NO_OF_USERS )
-//         .then(
-//           () => {
-//             console.log(`${NO_OF_USERS} users has been created`)
-//             return fakeProjectCreater(NO_OF_PROJECTS, BATCH_SIZE_FOR_PROEJCT) 
-//           }
-//         )
-//         .then(
-//           () => {
-//             console.log(`${NO_OF_PROJECTS} projects has been created`)
-//             return fakeProjectCreater( NO_OF_TASKS,  BATCH_SIZE_FOR_TASK ) 
-//           }
-//         )
-//         .then(
-//           () => {
-//             console.log(`${NO_OF_TASKS} projects has been created`)
-//             res.status(200).json({msg : "Sucessfully Created all data" })  
-//           }
-//         )
-//         .catch( err => next(err) )
-
-// }
 export function fakeDataGenerator(req, res, next) {
   dBCallWithPromise
     .run("BEGIN TRANSACTION") 
