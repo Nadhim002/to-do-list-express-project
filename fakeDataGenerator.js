@@ -23,21 +23,24 @@ async function fakeUserGenerator(noOfusers) {
   return await dBCallWithPromise.run(sqlQuery, flatValues)
 }
 
-async function fakeProjectCreater(nooFProjects, batchSize) {
-  let promiseResolver = []
 
+async function fakeProjectCreater(nooFProjects, batchSize) {
+
+  let promiseResolver = []
+    
   let userIds = await dBCallWithPromise.all("select user_id from users")
 
   userIds = userIds.map((user_id) => user_id.user_id)
   const colors = ["red", "white", "black", "yellow", "blue"]
   const colorsLength = colors.length
-
-  for (let project = 0; project < nooFProjects / batchSize; project++) {
+    
+  for ( let batchNo =  1 ; batchNo < nooFProjects / batchSize + 1 ; batchNo++ ) {
+  
     const values = []
 
-    for (let each = 0; each < batchSize; each++) {
+    for (let entry = 1 ; entry < batchSize + 1 ; entry++) {
       values.push([
-        `project_${project}_${each}`,
+        `project_${batchNo}_${entry}`,
         colors[Math.floor(Math.random() * colorsLength)],
         userIds[Math.floor(Math.random() * userIds.length)],
       ])

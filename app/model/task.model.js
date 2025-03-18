@@ -75,10 +75,17 @@ export class Task {
       values.push( filters.isCompleted )
     }
 
+    if( filters.project_id){
+      sqlAdder.push( " project_id = ? " )
+      values.push( filters.project_id )
+    }
+
     if( values.length > 0 ){
       sqlQuery += " where " + sqlAdder.join("and")
 
     }
+
+    
 
     return dBCallWithPromise.all(sqlQuery, values)
 

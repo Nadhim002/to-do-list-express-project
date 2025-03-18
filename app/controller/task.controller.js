@@ -137,4 +137,6 @@ function filterTaskHelper( filters ){
   this.created_start_date = filters.created_start_date
   this.created_end_date = filters.created_end_date
 
+  this.project_id = filters.project_id
+
 }
