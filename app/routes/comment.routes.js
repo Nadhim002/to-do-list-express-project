@@ -7,7 +7,7 @@ commentRouter.post("/" ,  createComment )
 
 commentRouter.get("/:projectId" , getComment )
 
-commentRouter.patch("/:id" , updateComment  )
+commentRouter.put("/:id" , updateComment  )
 
 commentRouter.delete("/:id"  , deleteComment  )
 

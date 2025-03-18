@@ -7,20 +7,18 @@ export function createComment( req , res , next  ){
 
     const comment =  new Comment( req.body )
 
-    if( ! comment.comment_content ){
+    if( ! comment.commentContent ){
         res.status(400).json( { err : `Need Comment content to add comment` } )
         return
     }
 
-    console.log( comment  )
-
-    if( isNaN( comment.project_id  ) || isNaN( comment.task_id  )  ){
+    if( isNaN( comment.projectId  ) || isNaN( comment.taskId  )  ){
         res.status(400).json( { err : `Enter Proper Project ID or Task ID` } )
         return
     }
 
     comment.createComment()
-        .then( ([ lastId , _ ])  => { res.status(200).json({ msg : `Comment has been added with id - ${lastId}`}) } )
+        .then( ( createdComment )  =>  res.status(200).json( createdComment )  )
         .catch( err => next(err) )
 
   }
@@ -64,14 +62,14 @@ export function updateComment( req , res , next  ){
 
     Comment.updateComment( commentId , contentToUpdate )
 
-    .then( ( _ , changes ) => {
+    .then( (  updatedComment ) => {
 
-        if(changes){
-            res.status(200).json({msg : `Comment with id - ${commentId} has been Updated`})
+        if( updatedComment.length > 0  ){
+            res.status(200).json( updatedComment )
             return
         }
 
-        res.status(400).json({msg : `Comment with id - ${commentId} has been found`})
+        res.status(400).json({err : `Comment with id - ${commentId} has not been found`})
 
     } )
     .catch( err => next(err) )
@@ -93,14 +91,14 @@ export function deleteComment( req , res , next  ){
 
     Comment.deleteComment(  commentId )
 
-        .then( ( _ , changes ) => {
+        .then( ( deletedComment  ) => {
 
-            if(changes){
-                res.status(200).json({msg : `Comment with id - ${commentId} has been deleted`})
+            if( deletedComment.length > 0  ){
+                res.status(200).json( deletedComment )
                 return
             }
 
-            res.status(400).json({msg : `Comment with id - ${commentId} has been found`})
+            res.status(400).json({ err : `Comment with id - ${commentId} has been found`})
 
         } )
         .catch( err => next(err) )
@@ -108,15 +106,3 @@ export function deleteComment( req , res , next  ){
 
  }
 
-
-// const dictionary = { content : "Hello World" , task_id : null }
-
-
-// console.log( " task_id " , Number( dictionary.task_id ) )
-// console.log( " project_id " , Number( dictionary.project_id ) )
-
-// if( isNaN( dictionary.project_id  ) || isNaN( dictionary.task_id  )  ){
-
-//     console.log({ err : `Need Comment content to add comment` } )
-    
-// } 

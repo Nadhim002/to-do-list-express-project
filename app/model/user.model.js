@@ -1,4 +1,5 @@
-import dBCallWithPromise from "../config/promiseBasedDbCalls.js"
+import { db , userTable } from "../config/drizzle.config.js"
+import { eq } from "drizzle-orm"
 
 
 export class User{
@@ -11,21 +12,23 @@ export class User{
     }
 
 
-    addUser(){
+    async addUser(){
 
-        const sqlQuery = "insert into users ( user_name , user_mail )  values( ? , ?  ) "
-        const values = [ this.user_name , this.user_mail ]
-        return dBCallWithPromise.run( sqlQuery , values )
+      return  db.insert( userTable )
+              .values( {
+                userName : this.user_name , 
+                userMail : this.user_mail
+              } )
+              .returning()
+
         
     }
 
     static deleteUser( id ){ 
 
-      const sqlQuery = "delete from users where user_id = ? "
-      const values = [id]
-
-      return dBCallWithPromise.run( sqlQuery , values )
-
+      return db.delete( userTable )
+              .where( eq( userTable.userId , id ) )
+              .returning()
     }
 
 }

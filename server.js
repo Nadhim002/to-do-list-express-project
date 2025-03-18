@@ -9,7 +9,6 @@ import userRouter from "./app/routes/user.routes.js"
 import logger from "./app/middleware/logger.js"
 import  errLogger  from "./app/middleware/errorLogger.js"
 
-import {fakeDataGenerator} from "./fakeDataGenerator.js"
 
 dotenv.config()
 
@@ -28,8 +27,6 @@ app.use( "/task" , taskRouter )
 app.use( "/project" , projectRouter )
 app.use("/comment" , commentRouter  )
 app.use("/user" , userRouter )
-
-app.post( "/fake-data" , fakeDataGenerator )
 
 app.use( errLogger )
 

@@ -1,41 +1,56 @@
-import dBCallWithPromise from "../config/promiseBasedDbCalls.js"
+import { db, projectTable } from "../config/drizzle.config.js"
+import { eq } from "drizzle-orm"
+
 
 export class Project {
   constructor(project) {
-    this.name = project.name
+    this.projectName = project.projectName
     this.color = project.color ?? "White"
-    this.is_favorite = project.is_favorite ?? 0
-    this.user_id = Number(project.user_id )
+    this.isfavorite = parseInt(project.isfavorite) ?? 0
+    this.userId = parseInt(project.userId)
   }
 
   createProject() {
-    const sqlQuery =
-    "insert into projects ( project_name , color , is_favorite , user_id ) values( ? , ? , ? , ? )"
-    const values = [this.name, this.color, this.is_favorite , this.user_id ]
-    return dBCallWithPromise.run(sqlQuery, values)
+    return db
+      .insert(projectTable)
+      .values({
+        projectName: this.projectName,
+        color: this.color,
+        isFavorite: this.isfavorite,
+        userId: this.userId,
+      })
+      .returning()
   }
 
-  updateProject(id) {
-    const sqlQuery =
-      "update projects set project_name = ?  ,  color = ?  ,  is_favorite = ?   where project_id = ?  "
-    const values = [this.name, this.color, this.is_favorite, id]
-    return dBCallWithPromise.run(sqlQuery, values)
+  updateProject(projectId) {
+    return db
+      .update(projectTable)
+      .set({
+        projectName: this.projectName,
+        color: this.color,
+        isFavorite: this.isfavorite,
+      })
+      .where( eq(  projectTable.projectId , projectId) )
+      .returning()
   }
 
-  static getProject(id) {
-    const sqlQuery = " select * from projects  where project_id = ? "
-    const values = [id]
-    return dBCallWithPromise.get(sqlQuery, values)
+  static getProject( projectId ) {
+      return db.select()
+               .from( projectTable )
+               .where( eq( projectTable.projectId , projectId  ) )
+
   }
 
   static getAllProject() {
-    const sqlQuery = " select * from projects  "
-    return dBCallWithPromise.all(sqlQuery)
+        return db.select()
+                 .from( projectTable )
   }
 
-  static deleteProject(id) {
-    const sqlQuery = " delete from  projects  where project_id = ?"
-    const values = [id]
-    return dBCallWithPromise.run(sqlQuery, values)
+  static deleteProject( projectId ) {
+
+    return db.delete( projectTable )
+                .where( eq(projectTable.projectId , projectId  ) )
+
   }
+
 }

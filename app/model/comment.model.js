@@ -1,36 +1,49 @@
-import dBCallWithPromise from "../config/promiseBasedDbCalls.js"
+import  { db , commentTable } from "../config/drizzle.config.js"
+import { eq } from "drizzle-orm"
 
 export class Comment {
   constructor(comment) {
-    this.comment_content = comment.commentContent
-    this.project_id = Number(comment.projectId)
-    this.task_id = Number(comment.taskId) || null
+    this.commentContent = comment.commentContent
+    this.projectId = Number(comment.projectId)
+    this.taskId = Number(comment.taskId) || null
   }
 
   createComment() {
-    const sqlQuery =
-      "insert into comments ( comment_content ,  project_id ,  task_id  ) values ( ? , ? , ?  )"
-      
-    return dBCallWithPromise.run(sqlQuery, [
-      this.comment_content,
-      this.project_id,
-      this.task_id,
-    ])
+
+    return db.insert( commentTable )
+             .values({
+              commentContent : this.commentContent ,
+              projectId : this.projectId , 
+              taskId : this.taskId
+             })
+             .returning()
+
   }
 
-  static updateComment(commentId, contentToUpdate) {
-    const sqlQuery =
-      "update comments set comment_content = ? where comment_id = ?"
-    return dBCallWithPromise.run(sqlQuery, [commentId, contentToUpdate])
+  static updateComment( commentId , contentToUpdate ) {
+
+    return db.update( commentTable )
+             .set({
+              commentContent : contentToUpdate
+             })
+             .where( eq( commentTable.commentId , commentId  ) )
+             .returning()
+
   }
 
-  static getComment(projectId) {
-    const sqlQuery = "select * from comments where project_id  = ? "
-    return dBCallWithPromise.all(sqlQuery, [projectId])
+  static getComment( commentId ) {
+
+    return db.select( )
+             .from( commentTable )
+             .where( eq( commentTable.commentId , commentId  ) )
+
   }
 
   static deleteComment(commentId) {
-    const sqlQuery = ` delete from comments where comment_id = ? `
-    return dBCallWithPromise.run(sqlQuery, [commentId])
+
+    return db.delete( commentTable )
+             .where( eq( commentTable.commentId , commentId  ) )
+             .returning()
+
   }
 }

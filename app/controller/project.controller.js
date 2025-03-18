@@ -1,41 +1,47 @@
+import { not } from "drizzle-orm"
 import { Project } from "../model/project.model.js"
 
 // @desc  Create new project
 // @route  POST /project
 
 export function createProject(req, res, next) {
+
   const project = new Project(req.body)
 
-  if (!project["name"]) {
+  if ( ! project["projectName"]) {
     res
       .status(400)
       .json({ msg: `Project Name is mandatory for Creating Projects` })
     return
   }
 
-  if( !project["user_id"] ){
-    res
-    .status(400)
-    .json({ msg: `User id is mandatory for Creating Projects` })
-   return
+  if ( ! project["userId"]) {
+    res.status(400).json({ msg: `User id is mandatory for Creating Projects` })
+    return
+  }
 
+  if ( ! [ 0 ,1 ].includes( project["isfavorite"]  )  ){
+    console.log( project.isfavorite , typeof project.isfavorite  )
+    res.status(400).json({ msg: `Enter valid value for isFavorite Projects` })
+    return
   }
 
   project
     .createProject()
-    .then(([lastID, _]) => {
+    .then((createdRow) => {
       res
         .status(200)
-        .json({ msg: `Project has been added with id - ${lastID}` })
+        .json( createdRow )
     })
-    .catch( err => next(err))
+    .catch((err) => next(err))
+
 }
 
 // @desc   Update a project  by ID
 // @route  PUT /project/:id
 
 export function updateProject(req, res, next) {
-  
+
   const idToUpdate = parseInt(req.params?.id)
 
   if (isNaN(idToUpdate)) {
@@ -45,20 +51,27 @@ export function updateProject(req, res, next) {
 
   const project = new Project(req.body)
 
-  if (!project["name"]) {
+  if (!project["projectName"]) {
     res
       .status(400)
       .json({ msg: `Project Name is mandatory for Updating Projects` })
     return
   }
 
+  if ( ! [ 0 ,1 ].includes( project["isfavorite"]  )  ){
+    res.status(400).json({ msg: `Enter valid value for isFavorite Projects` })
+    return
+  }
+
+
+
   project
     .updateProject(idToUpdate)
-    .then(([_, changes]) => {
-      if (changes) {
+    .then(( updatedRow ) => {
+      if (updatedRow.length > 0 ) {
         res
           .status(200)
-          .json({ msg: `Project  with id - ${idToUpdate} has been updated ` })
+          .json( updatedRow )
         return
       }
 
@@ -73,6 +86,7 @@ export function updateProject(req, res, next) {
 // @route  DELETE /project/:id
 
 export function deleteProject(req, res, next) {
+
   const idToDelete = parseInt(req.params?.id)
 
   if (isNaN(idToDelete)) {
@@ -81,13 +95,9 @@ export function deleteProject(req, res, next) {
   }
 
   Project.deleteProject(idToDelete)
-    .then(([_, changes]) => {
-      if (changes) {
-        res
-          .status(200)
-          .json({
-            msg: `Project with Id ${idToDelete} has been deletes sucessfully`,
-          })
+    .then(( deletedRow ) => {
+      if (deletedRow.length > 0 ) {
+        res.status(200).json(deletedRow)
         return
       }
 
@@ -100,6 +110,7 @@ export function deleteProject(req, res, next) {
 // @route  GET /project/:id
 
 export function getProject(req, res, next) {
+
   const idToGet = parseInt(req.params?.id)
 
   if (isNaN(idToGet)) {
@@ -108,9 +119,10 @@ export function getProject(req, res, next) {
   }
 
   Project.getProject(idToGet)
-    .then((data) => {
-      if (data) {
-        res.status(200).json(data)
+    .then((returedRow) => {
+
+      if ( returedRow.length > 0  ) {
+        res.status(200).json(returedRow)
         return
       }
 
@@ -127,11 +139,11 @@ export function getProject(req, res, next) {
 export function getAllProject(req, res, next) {
 
   Project.getAllProject()
-    .then((data) => {
-      res.status(200).json(data)
+    .then((returedRows) => {
+      res.status(200).json(returedRows)
     })
     .catch((err) => {
       next(err)
     })
-    
+
 }

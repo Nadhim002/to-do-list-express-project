@@ -1,25 +1,17 @@
-import sqlite3 from "sqlite3"
+import Database from 'better-sqlite3'
 import path from "path"
 import { fileURLToPath } from "url"
+
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const relativePath = "../database/database.db"
-const absolutePath = path.resolve(__dirname, relativePath)
+export const absolutePath = path.resolve(__dirname, relativePath)
 
-const sqlite = sqlite3.verbose()
 
-const DB = new sqlite.Database( absolutePath , sqlite3.OPEN_READWRITE ,  connectedCallBack )
+const DB = new Database( absolutePath )
 
-function connectedCallBack(err) {
-  if (err) {
-    console.log(err.message)
-    return
-  }
-
-  console.log("DB Connection Created Sucessfully")
-}
 
 const sqlQueryToCreateProjectTable = `
                                     create table if not exists projects (
@@ -66,19 +58,19 @@ const sqlQueryToCreateCommentTable =  `
 
 const sqlQueryForeignKeyEnabling =  ' PRAGMA foreign_keys = ON ; '
 
-DB.exec(  sqlQueryForeignKeyEnabling + sqlQueryToCreateProjectTable + sqlQueryToCreateTaskTable + sqlQueryToCreateUserTable + sqlQueryToCreateCommentTable  , 
 
-        function(err) {
-          if (err) {
-            console.log(err.message)
-            return
-          }
-        
-          console.log("Table Created Sucessfully")
-          
-        }
-        
-)
+try {
 
+  DB.exec(sqlQueryForeignKeyEnabling)
+  DB.exec(sqlQueryToCreateUserTable)     
+  DB.exec(sqlQueryToCreateProjectTable) 
+  DB.exec(sqlQueryToCreateTaskTable)    
+  DB.exec(sqlQueryToCreateCommentTable) 
 
-export default DB 
+  console.log("Table Created Sucessfully")
+  
+} catch (err) {
+  console.error("Error creating tables:", err.message);
+}
+
+export default DB  

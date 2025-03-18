@@ -1,88 +1,76 @@
-import dBCallWithPromise from "../config/promiseBasedDbCalls.js"
+import { db, taskTable } from "../config/drizzle.config.js"
+import { and, eq, gte, lte } from "drizzle-orm"
 
 export class Task {
-
   constructor(task) {
     this.content = task.content
     this.description = task.description || "No Description"
     this.dueDate = task.dueDate || null
     this.isCompleted = task.isCompleted || 0
-    this.project_id = task.project_id
+    this.projectId = task.projectId
   }
 
   createTask() {
-    const sqlQuery =
-      "insert into tasks ( task_content , task_description , due_date  , is_completed , project_id ) values( ? , ? , ? , ? , ? )"
-    const values = [
-      this.content,
-      this.description,
-      this.dueDate,
-      this.isCompleted,
-      this.project_id,
-    ]
-    return dBCallWithPromise.run(sqlQuery, values)
+    return db
+      .insert(taskTable)
+      .values({
+        taskContent: this.content,
+        taskDescription: this.description,
+        dueDate: this.dueDate,
+        isCompleted: this.isCompleted,
+        projectId: this.projectId,
+      })
+      .returning()
   }
 
-  updateTask(id) {
-    const sqlQuery =
-      "update tasks set task_content = ? , task_description = ? ,  due_date = ? , is_completed  = ? , project_id  = ?   where task_id = ? "
-    const values = [
-      this.content,
-      this.description,
-      this.dueDate,
-      this.isCompleted,
-      this.project_id,
-      id,
-    ]
-    return dBCallWithPromise.run(sqlQuery, values)
+  updateTask(idToUpdate) {
+    return db
+      .update(taskTable)
+      .set({
+        taskContent: this.content,
+        taskDescription: this.description,
+        dueDate: this.dueDate,
+        isCompleted: this.isCompleted,
+        projectId: this.projectId,
+      })
+      .where(eq(taskTable.taskId, idToUpdate))
+      .returning()
   }
 
-  static deleteTask(id) {
-    const sqlQuery = " delete from  tasks  where task_id = ?"
-
-    const values = [id]
-    return dBCallWithPromise.run(sqlQuery, values)
+  static deleteTask(idToDelete) {
+    return db.delete(taskTable).where(eq(taskTable.taskId, idToDelete)).returning() 
   }
 
   static getTask(filters) {
 
-    let sqlQuery = " select * from tasks"
-    let sqlAdder = []
-    const values = []
+    const constraints = []
 
-    if( filters.due_start_date ){
-      sqlAdder.push( " due_date >= ? " )
-      values.push( filters.due_start_date )
+    if (filters.dueStartDate) {
+      constraints.push(gte(taskTable.dueDate, filters.dueStartDate))
     }
 
-    if ( filters.due_end_date ){
-      sqlAdder.push( " due_date <= ? " )
-      values.push( filters.due_end_date )
+    if (filters.dueEndDate) {
+      constraints.push(lte(taskTable.dueDate, filters.dueEndDate))
     }
 
-    if( filters.created_start_date ){
-      sqlAdder.push( " created_at >= ? " )
-      values.push( filters.created_start_date )
+    if (filters.CreatedStartDate) {
+      constraints.push(gte(taskTable.createdAt, filters.CreatedStartDate))
     }
 
-    if ( filters.created_end_date ){
-      sqlAdder.push( " created_at <= ? " )
-      values.push( filters.created_end_date )
+    if (filters.CreatedEndDate) {
+      constraints.push(lte(taskTable.createdAt, filters.CreatedEndDate))
     }
 
-    if ( filters.isCompleted ){
-      sqlAdder.push( " is_completed = ? " )
-      values.push( filters.isCompleted )
+    if (filters.isCompleted) {
+      constraints.push(lte(taskTable.isCompleted, filters.isCompleted))
     }
 
-    if( values.length > 0 ){
-      sqlQuery += " where " + sqlAdder.join("and")
+    if ( filters.projectId ){
+      constraints.push(eq(taskTable.projectId, filters.projectId))
 
     }
 
-    return dBCallWithPromise.all(sqlQuery, values)
+    return db.select( ).from( taskTable ).where(and(...constraints))
 
   }
-
 }
-

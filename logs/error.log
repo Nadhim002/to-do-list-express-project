@@ -38,3 +38,47 @@ POST http://localhost:8000/fake-data
 fakeTaskCreater is not defined time : 1742188234754
 POST http://localhost:8000/fake-data
 fakeTaskCreater is not defined time : 1742188306060
+POST http://localhost:8000/user/
+DB.run is not a function time : 1742210093534
+POST http://localhost:8000/user/
+UNIQUE constraint failed: users.user_mail time : 1742214186174
+POST http://localhost:8000/user/
+UNIQUE constraint failed: users.user_mail time : 1742214406145
+POST http://localhost:8000/project/
+Cannot set headers after they are sent to the client time : 1742218408264
+POST http://localhost:8000/project/
+FOREIGN KEY constraint failed time : 1742218555913
+POST http://localhost:8000/project/
+FOREIGN KEY constraint failed time : 1742218584048
+GET http://localhost:8000/project/2
+eq is not defined time : 1742218653284
+PUT http://localhost:8000/project/2
+near "=": syntax error time : 1742218826843
+PUT http://localhost:8000/project/2
+near "=": syntax error time : 1742218904077
+PUT http://localhost:8000/project/2
+projectid is not defined time : 1742219056831
+POST http://localhost:8000/project/
+FOREIGN KEY constraint failed time : 1742219204902
+GET http://localhost:8000/task/
+db.select(...).where is not a function time : 1742271196023
+GET http://localhost:8000/task/
+db.select(...).where is not a function time : 1742271220931
+GET http://localhost:8000/task/
+db.select(...).where is not a function time : 1742271222135
+PUT http://localhost:8000/task/3
+db.insert(...).values(...).where is not a function time : 1742271603686
+GET http://localhost:8000/task/
+Too many parameter values were provided time : 1742273024816
+GET http://localhost:8000/task/
+Too many parameter values were provided time : 1742273052211
+GET http://localhost:8000/task/
+cod is not defined time : 1742273322560
+POST http://localhost:8000/comment/
+FOREIGN KEY constraint failed time : 1742273521219
+GET http://localhost:8000/comment/4
+db.select(...).where is not a function time : 1742273537815
+GET http://localhost:8000/comment/4
+db.select(...).where is not a function time : 1742273566712
+GET http://localhost:8000/comment/4
+db.select(...).where is not a function time : 1742273567763

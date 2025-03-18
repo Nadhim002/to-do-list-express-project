@@ -10,7 +10,7 @@ const absoluteFilePath = path.resolve(__dirname, relativeFilePath)
 
 function errLogger(err, req, res, next) {
 
-  const errMessage = err.message + " " + `time : ${Date.now()}`
+  const errMessage = err.message + " " + `time : ${Date.now().toString() }`
   const methodAndEndPoint = `${req.method} ${req.protocol}://${req.get("host")}${req.originalUrl}`
 
   const logMessage =  methodAndEndPoint + "\n" +  errMessage +"\n"
@@ -21,7 +21,7 @@ function errLogger(err, req, res, next) {
     }
   })
 
-  res.status(500).json({ err: "Something went Wrong" , "errMessage" : err.message , "errObj" : err , err : err.stack  })
+  res.status(500).json({"errMessage" : err.message  , errStack : err.stack  })
 
   next()
 
