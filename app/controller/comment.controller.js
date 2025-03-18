@@ -28,15 +28,17 @@ export function createComment( req , res , next  ){
 
 export function getComment( req , res , next  ){
 
-
     const projectId = req.params.projectId
+    const pageSize = parseInt(req.body?.pageSize) || 10 
+    const lastSeenCommentId = parseInt( req.body?.lastSeenCommentId ) || 0 
+
 
     if( isNaN( projectId )   ){
         res.status(400).json( { err : `Enter Valid Project Id` } )
         return
     }
 
-    Comment.getComment( projectId  )
+    Comment.getComment( projectId   ,  pageSize  , lastSeenCommentId   )
         .then( commentsData => res.status(200).json(commentsData) )
         .catch( err => next(err) )
 

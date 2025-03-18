@@ -1,7 +1,8 @@
 import { db, taskTable } from "../config/drizzle.config.js"
-import { and, eq, gte, lte } from "drizzle-orm"
+import { and, eq, gte, lte , gt  } from "drizzle-orm"
 
 export class Task {
+
   constructor(task) {
     this.content = task.content
     this.description = task.description || "No Description"
@@ -45,6 +46,10 @@ export class Task {
 
     const constraints = []
 
+    if( filters.lastSeenTaskId ){
+      constraints.push(gt(taskTable.taskId , filters.lastSeenTaskId))
+    }
+
     if (filters.dueStartDate) {
       constraints.push(gte(taskTable.dueDate, filters.dueStartDate))
     }
@@ -67,10 +72,9 @@ export class Task {
 
     if ( filters.projectId ){
       constraints.push(eq(taskTable.projectId, filters.projectId))
-
     }
 
-    return db.select( ).from( taskTable ).where(and(...constraints))
+    return db.select().from( taskTable ).where(and(...constraints)).limit( filters.pageSize )
 
   }
 }

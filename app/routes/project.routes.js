@@ -1,16 +1,14 @@
 import express from "express"
-import { createProject , getProject , getAllProject ,updateProject , deleteProject  } from "../controller/project.controller.js"
+import { createProject , getProjectByUserId  ,updateProject , deleteProject  } from "../controller/project.controller.js"
 
 const projectRouter = express.Router()
 
 // Create
 projectRouter.post( "/" , createProject )
 
-// get all 
-projectRouter.get( "/" , getAllProject )
 
 // Read
-projectRouter.get( "/:id" , getProject )
+projectRouter.get( "/:id" , getProjectByUserId )
 
 // Update
 projectRouter.put( "/:id" , updateProject  )

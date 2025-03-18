@@ -1,5 +1,5 @@
 import { db, projectTable } from "../config/drizzle.config.js"
-import { eq } from "drizzle-orm"
+import { eq  , gt } from "drizzle-orm"
 
 
 export class Project {
@@ -34,17 +34,14 @@ export class Project {
       .returning()
   }
 
-  static getProject( projectId ) {
+  static getProject( userId  ,  pageSize  , lastSeenProjectId  ) {
       return db.select()
                .from( projectTable )
-               .where( eq( projectTable.projectId , projectId  ) )
+               .where( eq( projectTable.userId , userId  ) , gt( projectTable.projectId , lastSeenProjectId ) )
+               .limit( pageSize  )
 
   }
 
-  static getAllProject() {
-        return db.select()
-                 .from( projectTable )
-  }
 
   static deleteProject( projectId ) {
 

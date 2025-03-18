@@ -6,6 +6,8 @@ import projectRouter from "./app/routes/project.routes.js"
 import commentRouter from "./app/routes/comment.routes.js"
 import userRouter from "./app/routes/user.routes.js"
 
+import {fakeDataGenerator} from "./fakeDataGenerator.js"
+
 import logger from "./app/middleware/logger.js"
 import  errLogger  from "./app/middleware/errorLogger.js"
 
@@ -27,6 +29,7 @@ app.use( "/task" , taskRouter )
 app.use( "/project" , projectRouter )
 app.use("/comment" , commentRouter  )
 app.use("/user" , userRouter )
+app.post( "/fake-data" , fakeDataGenerator )
 
 app.use( errLogger )
 

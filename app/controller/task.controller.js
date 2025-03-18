@@ -114,6 +114,10 @@ export function getTask(req, res, next) {
 }
 
 function filterTaskHelper(filters) {
+
+  this.lastSeenTaskId = parseInt(filters.lastSeenTaskId)
+  this.pageSize = parseInt(filters.pageSize) || 10 
+
   this.dueStartDate = filters.dueStartDate
   this.dueEndDate = filters.dueEndDate
 

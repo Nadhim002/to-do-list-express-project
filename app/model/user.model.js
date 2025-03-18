@@ -26,6 +26,8 @@ export class User{
 
     static deleteUser( id ){ 
 
+      console.log( id )
+
       return db.delete( userTable )
               .where( eq( userTable.userId , id ) )
               .returning()

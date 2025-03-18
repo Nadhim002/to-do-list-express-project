@@ -63,8 +63,6 @@ export function updateProject(req, res, next) {
     return
   }
 
-
-
   project
     .updateProject(idToUpdate)
     .then(( updatedRow ) => {
@@ -106,19 +104,21 @@ export function deleteProject(req, res, next) {
     .catch((err) => next(err))
 }
 
-// @desc   Get a single project by ID
+// @desc   Get a  project by userID
 // @route  GET /project/:id
 
-export function getProject(req, res, next) {
+export function getProjectByUserId(req, res, next) {
 
-  const idToGet = parseInt(req.params?.id)
+  const userId = parseInt(req.params?.id)
+  const pageSize = parseInt(req.body?.pageSize) || 10 
+  const lastSeenProjectId = parseInt( req.body?.lastSeenProjectId ) || 0 
 
-  if (isNaN(idToGet)) {
-    res.status(400).json({ msg: `Project ID must be a Number` })
+  if (isNaN(userId)) {
+    res.status(400).json({ msg: `user ID must be a Number` })
     return
   }
 
-  Project.getProject(idToGet)
+  Project.getProject( userId , pageSize ,  lastSeenProjectId )
     .then((returedRow) => {
 
       if ( returedRow.length > 0  ) {
@@ -126,24 +126,10 @@ export function getProject(req, res, next) {
         return
       }
 
-      res.status(400).json({ msg: `Project Id ${idToGet} not found` })
+      res.status(400).json({ msg: `user Id ${userId} has no projects` })
     })
     .catch((err) => {
       next(err)
     })
 }
 
-// @desc   Get all projects
-// @route  GET /project
-
-export function getAllProject(req, res, next) {
-
-  Project.getAllProject()
-    .then((returedRows) => {
-      res.status(200).json(returedRows)
-    })
-    .catch((err) => {
-      next(err)
-    })
-
-}

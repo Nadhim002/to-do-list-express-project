@@ -1,5 +1,5 @@
 import  { db , commentTable } from "../config/drizzle.config.js"
-import { eq } from "drizzle-orm"
+import { eq , gt } from "drizzle-orm"
 
 export class Comment {
   constructor(comment) {
@@ -31,11 +31,12 @@ export class Comment {
 
   }
 
-  static getComment( commentId ) {
+  static getComment( projectId  ,  pageSize  , lastSeenCommentId  ) {
 
     return db.select( )
              .from( commentTable )
-             .where( eq( commentTable.commentId , commentId  ) )
+             .where(  eq( commentTable.projectId , projectId  ) , gt( commentTable.commentId , lastSeenCommentId ) )
+             .limit( pageSize )
 
   }
 

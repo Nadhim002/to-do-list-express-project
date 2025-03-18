@@ -58,6 +58,14 @@ const sqlQueryToCreateCommentTable =  `
 
 const sqlQueryForeignKeyEnabling =  ' PRAGMA foreign_keys = ON ; '
 
+const sqlQuerytoAddIndex = `
+                           create index if not exists project_user_id_index on projects( user_id ) ; 
+                           create index if not exists task_project_id on tasks( project_id ) ; 
+                           create index if not exists task_is_completed on tasks( is_completed ) ; 
+                           create index if not exists task_due_date on tasks( due_date ) ; 
+                           create index if not exists task_created_at on tasks( created_at ) ; 
+                           create index if not exists comment_project_id on comments( project_id ) ; 
+                           ` 
 
 try {
 
@@ -66,6 +74,7 @@ try {
   DB.exec(sqlQueryToCreateProjectTable) 
   DB.exec(sqlQueryToCreateTaskTable)    
   DB.exec(sqlQueryToCreateCommentTable) 
+  DB.exec(sqlQuerytoAddIndex)
 
   console.log("Table Created Sucessfully")
   
